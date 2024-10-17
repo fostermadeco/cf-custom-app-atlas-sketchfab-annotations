@@ -8,14 +8,12 @@ import LoadScript from "../components/load-script-sketchfab";
 const Field = () => {
   const sdk = useSDK<FieldAppSDK>();
 
-  const iframeRef = useRef(null);
-
   const [value, setValue] = useState<string | undefined>(
     sdk.field.getValue() || ""
   );
 
   useEffect(() => {
-    sdk.window.updateHeight(600)
+    sdk.window.updateHeight(600);
   }, []);
 
   /*
@@ -33,11 +31,6 @@ const Field = () => {
 
   return (
     <>
-      {value && (
-          <LoadScript>
-            <SketchfabModel sketchfabId={value} />
-          </LoadScript>
-      )}
       <TextInput
         value={value}
         aria-label="sketchfabId"
@@ -45,6 +38,11 @@ const Field = () => {
         onChange={onInputChange}
         isRequired
       />
+      {value && (
+        <LoadScript>
+          <SketchfabModel sketchfabId={value} />
+        </LoadScript>
+      )}
     </>
   );
 };

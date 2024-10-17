@@ -15,11 +15,7 @@ export function LoadScript({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  return (
-    <>
-      {scriptLoaded && children}
-    </>
-  );
+  return <>{scriptLoaded && children}</>;
 }
 
 export default LoadScript;
