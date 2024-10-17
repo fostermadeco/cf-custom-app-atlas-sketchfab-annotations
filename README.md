@@ -1,6 +1,5 @@
-# Contentful Custom App for Neurosurgical Atlas - Sketchfab Annotations
+# Contentful Custom App - Sketchfab Annotations
 
-Used on the 3D models tags field.
 
 - Loads 3D model after Sketchfab ID is added.
 - Annotations from model will save in the tags field after model is
@@ -11,6 +10,8 @@ The tags field is used in search.
 Note: Annotations are only available
 through the Sketchfab Viewer API, so must load the model in browser to
 get them. This field is read-only.
+
+Used on the 3D models tags field on the Neurosurgical Atlas.
 
 This project was bootstrapped with [Create Contentful App](https://github.com/contentful/create-contentful-app).
 
