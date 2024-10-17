@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Paragraph, TextInput } from "@contentful/f36-components";
+import React, { useEffect, useRef } from "react";
 import { FieldAppSDK } from "@contentful/app-sdk";
 import { /* useCMA, */ useSDK } from "@contentful/react-apps-toolkit";
 import SketchfabModel from "../components/sketchfab-model/sketchfab-model";
@@ -7,42 +6,50 @@ import LoadScript from "../components/load-script-sketchfab";
 
 const Field = () => {
   const sdk = useSDK<FieldAppSDK>();
-
-  const [value, setValue] = useState<string | undefined>(
-    sdk.field.getValue() || ""
-  );
+  const debounceInterval: any = useRef(false);
+  const detachExternalChangeHandler: any = useRef(null);
+  const [sketchfabId, setSketchfabId] = React.useState(false);
 
   useEffect(() => {
     sdk.window.updateHeight(600);
   }, []);
 
-  /*
-     To use the cma, inject it as follows.
-     If it is not needed, you can remove the next line.
-  */
-  // const cma = useCMA();
-  // If you only want to extend Contentful's default editing experience
-  // reuse Contentful's editor components
-  // -> https://www.contentful.com/developers/docs/extensibility/field-editors/
+  useEffect(() => {
+    const listener = sdk.entry.fields.sketchfabId.onValueChanged(
+      "en-US",
+      () => {
+        if (debounceInterval.current) {
+          clearInterval(debounceInterval.current);
+        }
+        debounceInterval.current = setTimeout(() => {
+          setSketchfabId(sdk.entry.fields.sketchfabId.getValue());
+        }, 500);
+      }
+    );
+    return () => {
+      // Remove debounce interval
+      if (debounceInterval.current) {
+        clearInterval(debounceInterval.current);
+      }
 
-  const onInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.currentTarget.value);
-  };
+      // Remove external change listener
+      if (detachExternalChangeHandler.current) {
+        detachExternalChangeHandler.current();
+      }
+
+      listener?.();
+    };
+  }, []);
+
+  if (!sketchfabId) {
+    return <div>Add Sketchfab ID to save the model annotations as tags.</div>;
+  }
 
   return (
     <>
-      <TextInput
-        value={value}
-        aria-label="sketchfabId"
-        id={sdk.field.id}
-        onChange={onInputChange}
-        isRequired
-      />
-      {value && (
-        <LoadScript>
-          <SketchfabModel sketchfabId={value} />
-        </LoadScript>
-      )}
+      <LoadScript>
+        <SketchfabModel />
+      </LoadScript>
     </>
   );
 };
