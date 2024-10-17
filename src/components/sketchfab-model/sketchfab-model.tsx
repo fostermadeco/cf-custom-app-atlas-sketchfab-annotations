@@ -2,8 +2,7 @@
 
 import { useRef } from "react";
 import useSketchfabUtility from "../../helpers/use-sketchfab-utility";
-import useSketchfabAnnotations from "../../helpers/use-sketchfab-annotations";
-import { Paragraph } from "@contentful/f36-components";
+import SketchfabAnnotations from "../sketchfab-annotations/sketchfab-annotations";
 
 export interface SketchfabModelProps {
   sketchfabId: string;
@@ -16,22 +15,12 @@ export function SketchfabModel({ sketchfabId }: SketchfabModelProps) {
     iframeRef,
     sketchfabId,
   });
-  const { annotationChips } = useSketchfabAnnotations({
-    sketchfabUtility,
-  });
 
   return (
     <div>
-      <div>
-        <h3>Annotations</h3>
-        <Paragraph>
-          <ul>
-            {annotationChips?.map((chip) => (
-              <li>{chip.label}</li>
-            ))}
-          </ul>
-        </Paragraph>
-      </div>
+      {sketchfabUtility && (
+        <SketchfabAnnotations sketchfabUtility={sketchfabUtility} />
+      )}
 
       <iframe
         style={{ position: "relative", height: 500 }}
